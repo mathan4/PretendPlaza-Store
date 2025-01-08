@@ -18,10 +18,9 @@ const NavBarComponent = (cartProducts) => {
     cartProducts.data.map((product)=>(
        price=price+product.price
     ))
-    console.log(price+"hiii")
     setTotal(price)
   }
-  console.log(cartProducts.data);
+  
   
   return (
     <div className="bg-custom-dark text-white">
@@ -104,7 +103,7 @@ const NavBarComponent = (cartProducts) => {
       {cartVisible && (
         <div className="overflow-y-scroll">
           <div className="absolute right-0 ">
-            <div className="  bg-white p-2 border-x-2 border-b-2 w-60 z-30">
+            <div className="  bg-white p-2 border-x-2 border-b-2 w-60 z-30 text-black">
               <div className="flex justify-end">
                 <button onClick={()=>{cartDetailsCloseHandler()}}>
                   <svg
@@ -124,18 +123,18 @@ const NavBarComponent = (cartProducts) => {
                 </button>
               </div>
               {cartProducts.data.length>0?<div><div>
-                              {cartProducts.data.map((product, index) => (
+                              {cartProducts.data.map((products, index) => (
                                   <div
                                       key={index}
-                                      className="flex justify-between items-center gap-2">
-                                      <p>{product.title}</p>
-                                      <p>{product.price}</p>
+                                      className="flex justify-between items-center gap-2 text-black">
+                                      <p>{products.title}</p>
+                                      <p>{products.price}</p>
                                       <div><button onClick={() => { cartProducts.removeFromCart(index), calc(); } } className="font-bold text-red-500 text-xs bg-slate-100 rounded-lg px-2 hover:bg-slate-50">
                                           remove
                                       </button></div>
                                   </div>
                               ))}
-                          </div><div className="flex justify-between">Total<p>{Math.floor(total)}</p></div></div> : <div>No items in cart</div>}
+                          </div><div className="flex justify-between text-black">Total<p>{Math.floor(total)}</p></div></div> : <div>No items in cart</div>}
             </div>
           </div>
         </div>

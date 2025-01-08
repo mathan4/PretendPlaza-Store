@@ -1,26 +1,24 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, {useState } from "react";
 import ProductCardComponent from "../ProductCardComponent/ProductCardComponent";
 import NavBarComponent from "../NavBarComponent/NavBarComponent";
+import { useQuery } from "@tanstack/react-query";
 
 const ProductFetchComponent = () => {
-  const [product, setProduct] = useState([]);
   const [cart, setCart] = useState([]);
   const [searchKey, setSearchKey] = useState("");
   const [search, setSearch] = useState(false);
 
   const fetchProducts = async () => {
     const response = await axios.get(`https://fakestoreapi.com/products`);
-    setProduct(response.data);
+    return response.data
   };
-
   const addToCart = (productDetails) => {
     if (cart.includes(productDetails)) {
       alert("Already exists in cart");
     } else {
       setCart([...cart, productDetails]);
     }
-    //  setTotal(total+productDetails.price);
   };
 
   const removeFromCart = (removeId) => {
@@ -33,14 +31,9 @@ const ProductFetchComponent = () => {
       searchKey.length > 1 ? setSearch(true) : setSearch(false);
     }
   };
-
-  console.log(searchKey);
-  console.log(cart);
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-  console.log(product);
+  
+  const {data:product,isLoading,isError}=useQuery({queryKey:['product'],queryFn:()=>fetchProducts()})
+ 
   return (
     <React.Fragment>
       <nav className="w-full fixed z-20">
@@ -62,12 +55,6 @@ const ProductFetchComponent = () => {
                   >
                     <ProductCardComponent data={it} addToCart={addToCart} />
                   </div>
-
-                  // <div className='w-1/3 h-2/5' key={index}>
-                  //     <div className='flex  justify-center'><img className='w-52 h-52 rounded-md' src={it.image} alt='name' height='200' width={200}/></div>
-                  //     <p>{it.title}</p>
-                  //     <p>{it.description}</p>
-                  // </div>
                 ))}
             </div>
           )}

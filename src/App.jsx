@@ -1,10 +1,10 @@
 import React from 'react'
-import ProductFetchComponent from './Components/ProductFetchComponent/ProductFetchComponent'
+import ProductFetchQueryComponent from './Components/ProductFetchComponent/ProductFetchQueryComponent'
 
 const App = () => {
   return (
     <React.Fragment>
-      <ProductFetchComponent/>
+      <ProductFetchQueryComponent/>
     </React.Fragment>
   )
 }
