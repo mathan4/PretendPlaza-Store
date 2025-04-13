@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
+import { CartContext } from "../CartContextProvider/CartContextProvider";
 
 const ProductCardComponent = (productDetails) => {
+
+  const context=useContext(CartContext)
+  const {addToCart}=context
   return (
     <React.Fragment>
-      <div className="">
+      <div >
         <div className="flex justify-center w-52">
           <img
             className="rounded-lg h-52 w-52"
@@ -18,7 +22,7 @@ const ProductCardComponent = (productDetails) => {
            <div className="text-lg">Rs.{productDetails.data.price}</div>
           <button 
            onClick={()=>{
-            productDetails.addToCart(productDetails.data)
+            addToCart(productDetails.data)
            }}
            className="flex border-2  p-1 rounded-lg  bg-yellow-400 hover:bg-yellow-500 text-black">
             Add to cart

@@ -1,59 +1,46 @@
 import axios from "axios";
-import React, {useState } from "react";
+import React, {useContext, useState } from "react";
 import ProductCardComponent from "../ProductCardComponent/ProductCardComponent";
-import NavBarComponent from "../NavBarComponent/NavBarComponent";
 import { useQuery } from "@tanstack/react-query";
+import { CartContext } from "../CartContextProvider/CartContextProvider";
 
 const ProductFetchComponent = () => {
-  const [cart, setCart] = useState([]);
-  const [searchKey, setSearchKey] = useState("");
-  const [search, setSearch] = useState(false);
+
+ 
+  const context = useContext(CartContext);
+  const {search,searchKey}=context
 
   const fetchProducts = async () => {
     const response = await axios.get(`https://fakestoreapi.com/products`);
     return response.data
   };
-  const addToCart = (productDetails) => {
-    if (cart.includes(productDetails)) {
-      alert("Already exists in cart");
-    } else {
-      setCart([...cart, productDetails]);
-    }
-  };
-
-  const removeFromCart = (removeId) => {
-    cart.splice(`${removeId}`, 1);
-    setCart([...cart]);
-  };
-  const searchBarHandler = (event) => {
-    setSearchKey(event.target.value);
-    {
-      searchKey.length > 1 ? setSearch(true) : setSearch(false);
-    }
-  };
   
-  const {data:product,isLoading,isError}=useQuery({queryKey:['product'],queryFn:()=>fetchProducts()})
+  const {data:product,isLoading,isError,error}=useQuery({queryKey:['product'],queryFn:()=>fetchProducts()})
+  
+  if(isLoading){
+    return(
+      <div>Loading...</div>
+    )
+  }
+  if(isError){
+    <div>Error{error.message}</div>
+  }
  
   return (
     <React.Fragment>
       <nav className="w-full fixed z-20">
-        <NavBarComponent
-          data={cart}
-          removeFromCart={removeFromCart}
-          searchBarHandler={searchBarHandler}
-        />
       </nav>
       <main className="bg-slate-100">
         <div>
           {!search && (
-            <div className="flex w-full flex-wrap gap-10 justify-evenly py-40 px-12 sm:px-0 ">
+            <div className="flex w-full flex-wrap gap-10 justify-evenly py-4 px-12 sm:px-0 ">
               {product &&
                 product.map((it, index) => (
                   <div
                     className="w-90 h-96 z-0 bg-blue-100 shadow-md text-gray-800 hover:shadow-2xl hover:scale-105 duration-300 transition-transform hover:bg-white p-4 rounded-lg px-10 xs:mt-10 xs:w-72"
                     key={index}
                   >
-                    <ProductCardComponent data={it} addToCart={addToCart} />
+                    <ProductCardComponent data={it} />
                   </div>
                 ))}
             </div>
@@ -72,7 +59,7 @@ const ProductFetchComponent = () => {
                       className="w-90 h-96 z-0 bg-slate-200 hover:scale-105 hover:scale-y-125 transition-transform hover:bg-white p-4 rounded-lg px-10"
                       key={index}
                     >
-                      <ProductCardComponent data={it} addToCart={addToCart} />
+                      <ProductCardComponent data={it}  />
                     </div>
                   ))}
             </div>
