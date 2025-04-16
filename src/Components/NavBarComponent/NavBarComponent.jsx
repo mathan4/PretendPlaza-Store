@@ -14,9 +14,6 @@ const NavBarComponent = (cartProducts) => {
   const cartDetailsOpenHandler = () => {
     navigate('/cart')
   };
-  
-
-  
 
   return (
     <div className="bg-custom-dark text-white">
@@ -80,7 +77,7 @@ const NavBarComponent = (cartProducts) => {
               </button>
               {cart.length >= 1 && (
                 <div className=" text-white border-1 bg-red-500 font-bold text-center w-6 rounded-full relative bottom-3 right-3">
-                  {cartProducts.data.length}
+                  {cart.length}
                 </div>
               )}
             </div>

@@ -5,6 +5,7 @@ const ProductCardComponent = (productDetails) => {
 
   const context=useContext(CartContext)
   const {addToCart}=context
+  console.log(productDetails.data)
   return (
     <React.Fragment>
       <div >
@@ -42,9 +43,6 @@ const ProductCardComponent = (productDetails) => {
             </svg>
           </button>
           </div>
-          {/* <p className="w-60 h-40 text-ellipsis overflow-hidden whitespace-nowrap hover:whitespace-normal hover:overflow-y-scroll hover:bg-white text-sm">
-            {productDetails.data.description}
-          </p> */}
         </div>
       </div>
     </React.Fragment>
