@@ -3,81 +3,114 @@ import { CartContext } from "../CartContextProvider/CartContextProvider";
 import { useNavigate } from "react-router-dom";
 
 const CartComponent = () => {
-  const { cart, total, removeFromCart} = useContext(CartContext);
+  const { cart, total, removeFromCart, updateQuantity, checkout } = useContext(CartContext);
   const navigate = useNavigate();
 
-  const cartDetailsCloseHandler = () => {
+  const handleQuantityChange = (index, newQuantity) => {
+    if (newQuantity >= 1) {
+      updateQuantity(index, newQuantity);
+    }
+  };
+
+  const goToHome = () => {
     navigate("/");
   };
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-end z-40">
-      <div className="h-full w-80 md:w-96 bg-white shadow-lg p-4 flex flex-col overflow-y-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center border-b pb-2">
-          <h2 className="text-xl font-semibold">Your Cart</h2>
-          <button
-            onClick={cartDetailsCloseHandler}
-            className="text-gray-500 hover:text-black transition"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
+  const handleCheckout = () => {
+   
+    alert(`Processing checkout for ${cart.length} items. Total: ₹${Math.floor(total)}`);
+    checkout()
+    navigate('/')
+  };
 
-        {/* Cart Items */}
-        <div className="flex-1 mt-4 space-y-4">
-          {cart.length > 0 ? (
-            cart.map((product, index) => (
-              <div
-                key={index}
-                className="flex justify-between items-center bg-gray-100 p-2 rounded-lg shadow-sm"
-              >
-                <div className="flex flex-col">
-                  <p className="font-medium text-sm">{product.title}</p>
-                  <p className="text-xs text-gray-500">₹ {product.price}</p>
-                </div>
+  return (
+    <div className="cart-container md:mx-8 xl:mx-96 md:mt-10 xl:mt-20 p-4 bg-white rounded-lg shadow-md">
+      {/* Header with Back Button */}
+      <div className="pb-3 mb-4 border-b border-gray-200 flex items-center justify-between">
+        <button
+          onClick={goToHome}
+          className="mr-3 text-gray-600 hover:text-black transition flex items-center"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-5 h-5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+            />
+          </svg>
+          <span className="ml-1">Back</span>
+        </button>
+        <h2 className="text-xl font-semibold">Your Cart</h2>
+      </div>
+
+      {/* Cart Items */}
+      <div className="space-y-3 mb-6">
+        {cart.length > 0 ? (
+          cart.map((product, index) => (
+            <div
+              key={index}
+              className="flex justify-between items-center bg-gray-50 p-3 rounded-md"
+            >
+              {/* Product Info */}
+              <div className="flex flex-col">
+                <p className="font-medium">{product.title}</p>
+                <p className="text-sm text-gray-600">₹ {product.price}</p>
+              </div>
+
+              {/* Quantity Control */}
+              <div className="flex items-center space-x-2">
                 <button
-                  onClick={() => removeFromCart(index)}
-                  className="text-xs text-red-500 font-bold hover:underline"
+                  onClick={() => handleQuantityChange(index, (product.quantity || 1) - 1)}
+                  className="bg-gray-200 text-gray-700 w-6 h-6 rounded flex items-center justify-center hover:bg-gray-300"
+                  disabled={(product.quantity || 1) <= 1}
                 >
-                  Remove
+                  -
+                </button>
+                <span className="text-sm font-medium">{product.quantity || 1}</span>
+                <button
+                  onClick={() => handleQuantityChange(index, (product.quantity || 1) + 1)}
+                  className="bg-gray-200 text-gray-700 w-6 h-6 rounded flex items-center justify-center hover:bg-gray-300"
+                >
+                  +
                 </button>
               </div>
-            ))
-          ) : (
-            <div className="text-center text-gray-400 mt-10">No items in cart</div>
-          )}
-        </div>
 
-        {/* Total */}
-        <div className="mt-6 border-t pt-4 flex justify-between items-center font-semibold text-lg">
-          <span>Total:</span>
-          <span>₹ {Math.floor(total)}</span>
-        </div>
-
-        {/* Checkout Button (Optional) */}
-        {cart.length > 0 && (
-          <button
-            className="mt-4 bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition"
-            onClick={() => alert("Proceed to Checkout")}
-          >
-            Checkout
-          </button>
+              {/* Remove Button */}
+              <button
+                onClick={() => removeFromCart(index)}
+                className="text-sm text-red-500 hover:text-red-700 ml-2"
+              >
+                Remove
+              </button>
+            </div>
+          ))
+        ) : (
+          <div className="text-center py-6 text-gray-500">Your cart is empty</div>
         )}
       </div>
+
+      {/* Total */}
+      <div className="flex justify-between items-center font-semibold text-lg pt-3 border-t border-gray-200">
+        <span>Total:</span>
+        <span>₹ {Math.floor(total)}</span>
+      </div>
+
+      {/* Checkout Button */}
+      {cart.length > 0 && (
+        <button
+          className="w-full mt-4 bg-black text-white py-2 rounded-md hover:bg-gray-800 transition"
+          onClick={handleCheckout}
+        >
+          Checkout
+        </button>
+      )}
     </div>
   );
 };
